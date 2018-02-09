@@ -1,32 +1,36 @@
-var Express = require('express');
-var multer = require('multer');
-var bodyParser = require('body-parser');
-var app = Express();
+const express = require('express'),
+    fileUpload = require('express-fileupload'),
+    app = express(),
+    path = require('path');
 
-app.use(bodyParser.json());
+app.use(fileUpload());
 
-var Storage = multer.diskStorage({
-    destination: function(req, file, callback) {
-        callback(null, "./../upload");
-    },
-    filename: function(req, file, callback) {
-        callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+app.post('/upload', (req, res) => {
+    if (req.files.sample === undefined)
+    {
+        return res.status(400).send('no file found');
     }
-});
 
-var upload = multer({
-    storage: Storage
-});
+    let file = req.files.sample;
+    console.log(__dirname + " " + file.name);
 
-app.get("/", function(req, res) {
-    res.sendFile(__dirname + "/index.html");
-});
+    let uploadpath = path.join(__dirname,"/../upload/" , file.name);
+    console.log(uploadpath);
 
-app.post("/api/Upload", function(req, res) {
-    upload(req, res, function(err) {
+    file.mv(uploadpath, (err) => {
         if (err) {
-            return res.end("Something went wrong!");
+            //return res.status(400).send(err).end();
         }
-        return res.end("File uploaded sucessfully!.");
+        res.status(200).send("success");
     });
+});
+
+
+app.get('/upload',(req,res)=>{
+    let uploadpath = path.join(__dirname,"/../upload/test.jpg");
+    res.json(uploadpath);
+});
+
+app.listen(3000, () => {
+    console.log('app run on ',3000)
 });
