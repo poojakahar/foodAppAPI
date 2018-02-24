@@ -3,10 +3,12 @@ var findOrCreate = require('mongoose-findorcreate');
 
 var SUser=mongoose.Schema({
    username:{
-       type: String
+       type: String,
+       unique: true
    },
     password:{
-       type: String
+       type: String,
+        //unique:true
     },
     token:{
        type: String
@@ -16,4 +18,4 @@ var SUser=mongoose.Schema({
 SUser.plugin(findOrCreate);
 var Users=mongoose.model('User',SUser);
 
-module.exports=Users;
+module.exports={Users};

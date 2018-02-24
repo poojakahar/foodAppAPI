@@ -2,9 +2,12 @@ const mongoose=require('./../db/db');
 
 var SCategory=mongoose.Schema({
     category_name:{
-        required:true,
-        unique: true,
+        //required:true,
+        //unique: true,
         type: String
+    },
+    image:{
+        type:String
     }
 });
 
